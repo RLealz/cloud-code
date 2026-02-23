@@ -1,6 +1,6 @@
 FROM nikolaik/python-nodejs:python3.12-nodejs22-bookworm
 ENV NODE_ENV=production
-ARG TIGRISFS_VERSION=0.3.1
+ARG TIGRISFS_VERSION=1.2.1
 ARG CLOUDFLARED_DEB_URL=https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
 
 # Install system dependencies + tigrisfs/cloudflared/opencode, then clean cache
@@ -11,9 +11,11 @@ RUN set -eux; \
       ca-certificates \
       curl; \
     \
-    curl -fsSL "https://github.com/tigrisdata/tigrisfs/releases/download/v${TIGRISFS_VERSION}/tigrisfs_${TIGRISFS_VERSION}_linux_amd64.deb" -o /tmp/tigrisfs.deb; \
-    dpkg -i /tmp/tigrisfs.deb; \
-    rm -f /tmp/tigrisfs.deb; \
+    curl -fsSL "https://github.com/tigrisdata/tigrisfs/releases/download/v${TIGRISFS_VERSION}/tigrisfs_${TIGRISFS_VERSION}_linux_amd64.tar.gz" \
+        -o /tmp/tigrisfs.tar.gz; \
+    tar -xzf /tmp/tigrisfs.tar.gz -C /usr/local/bin/; \
+    chmod +x /usr/local/bin/tigrisfs; \
+    rm -f /tmp/tigrisfs.tar.gz; \
     \
     curl -fsSL "${CLOUDFLARED_DEB_URL}" -o /tmp/cloudflared.deb; \
     dpkg -i /tmp/cloudflared.deb; \
@@ -79,7 +81,7 @@ else
     export AWS_SECRET_ACCESS_KEY="$S3_SECRET_ACCESS_KEY"
     export AWS_REGION="${S3_REGION:-auto}"
     export AWS_S3_PATH_STYLE="${S3_PATH_STYLE:-false}"
-    /usr/bin/tigrisfs --endpoint "$S3_ENDPOINT" ${TIGRISFS_ARGS:-} -f "${S3_BUCKET}${S3_PREFIX:+:$S3_PREFIX}" "$MOUNT_POINT" &
+    /usr/local/bin/tigrisfs --endpoint "$S3_ENDPOINT" ${TIGRISFS_ARGS:-} -f "${S3_BUCKET}${S3_PREFIX:+:$S3_PREFIX}" "$MOUNT_POINT" &
     sleep 3
     if ! mountpoint -q "$MOUNT_POINT"; then
         echo "[ERROR] S3 mount failed"
