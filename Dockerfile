@@ -21,9 +21,7 @@ RUN set -eux; \
     dpkg -i /tmp/cloudflared.deb; \
     rm -f /tmp/cloudflared.deb; \
     \
-    curl -fsSL "https://github.com/sst/opencode/releases/download/v1.2.10/opencode-linux-x64" \
-        -o /usr/local/bin/opencode; \
-    chmod +x /usr/local/bin/opencode; \
+    npm install -g opencode-ai@1.2.10; \
     \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
