@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "cloud-code",
+  "account_id": "cf04b7321cda0acf0498ef6165cce367",
   "main": "./src/index.ts",
   "compatibility_date": "2026-01-01",
   "compatibility_flags": ["nodejs_compat"],
