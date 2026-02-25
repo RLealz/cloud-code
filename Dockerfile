@@ -21,16 +21,9 @@ RUN set -eux; \
     dpkg -i /tmp/cloudflared.deb; \
     rm -f /tmp/cloudflared.deb; \
     \
-    curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path || true; \
-    if [ -f /root/.opencode/bin/opencode ]; then \
-        mv /root/.opencode/bin/opencode /usr/local/bin/opencode; \
-    else \
-        echo "[WARN] opencode install script failed, attempting direct binary download..."; \
-        OPENCODE_VERSION=$(curl -fsSL https://api.github.com/repos/sst/opencode/releases/latest | grep '"tag_name"' | sed 's/.*"tag_name": *"v\([^"]*\)".*/\1/'); \
-        curl -fsSL "https://github.com/sst/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-x64" \
-            -o /usr/local/bin/opencode; \
-        chmod +x /usr/local/bin/opencode; \
-    fi; \
+    curl -fsSL "https://github.com/sst/opencode/releases/download/v1.2.10/opencode-linux-x64" \
+        -o /usr/local/bin/opencode; \
+    chmod +x /usr/local/bin/opencode; \
     \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
